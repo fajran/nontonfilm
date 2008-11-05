@@ -18,8 +18,8 @@ def keluar(w):
 	player.set_state(gst.STATE_NULL)
 	gtk.main_quit()
 
-def aturPosisi():
-	global durasi, sWaktu
+def atur_posisi():
+	global durasi, slider_waktu
 
 	while True:
 		while not durasi:
@@ -30,40 +30,40 @@ def aturPosisi():
 			except:
 				pass
 	
-		sWaktu.set_range(0, durasi / 1000000)
+		slider_waktu.set_range(0, durasi / 1000000)
 
 		while durasi:
 			time.sleep(1.0)
 
 			posisi = player.query_position(time_format, None)[0]
-			sWaktu.set_value(posisi / 1000000)
+			slider_waktu.set_value(posisi / 1000000)
 
 
 
-def startStop(w=None):
+def start_stop(w=None):
 	global mulai, durasi
 
 	if mulai:
 		player.set_state(gst.STATE_PAUSED)
-		imgPutar.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
+		img_putar.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
 
 	else:
 		player.set_state(gst.STATE_PLAYING)
-		imgPutar.set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
+		img_putar.set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
 
 	mulai = not mulai
 
-def ubahPosisi(w, scroll, value):
-	posisi = sWaktu.get_value() * 1000000
+def ubah_posisi(w, scroll, value):
+	posisi = slider_waktu.get_value() * 1000000
 	player.seek_simple(time_format, gst.SEEK_FLAG_FLUSH, posisi)
 
-def pilihFilm(w):
-	global fileFilm
+def pilih_film(w):
+	global file_film
 
 	fc = gtk.FileChooserDialog("Pilih Film", buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
-	if fileFilm:
-		print fileFilm
-		dir = os.path.dirname(fileFilm)
+	if file_film:
+		print file_film
+		dir = os.path.dirname(file_film)
 		fc.set_current_folder(dir)
 
 	res = fc.run()
@@ -77,25 +77,25 @@ def pilihFilm(w):
 glade = gtk.glade.XML("nontonfilm.glade")
 
 window = glade.get_widget("window")
-boxVideo = glade.get_widget("boxVideo")
-btnPutar = glade.get_widget("btnPutar")
-btnPilihFilm = glade.get_widget("btnPilihFilm")
-sWaktu = glade.get_widget("sWaktu")
-imgPutar = glade.get_widget("imgPutar")
+box_video = glade.get_widget("box_video")
+btn_putar = glade.get_widget("btn_putar")
+btn_pilih_film = glade.get_widget("btn_pilih_film")
+slider_waktu = glade.get_widget("slider_waktu")
+img_putar = glade.get_widget("img_putar")
 
 layar = gtk.DrawingArea()
-boxVideo.add(layar)
+box_video.add(layar)
 
-btnPutar.connect("clicked", startStop)
+btn_putar.connect("clicked", start_stop)
 window.connect("destroy", keluar)
-sWaktu.connect("change-value", ubahPosisi)
-btnPilihFilm.connect("clicked", pilihFilm)
+slider_waktu.connect("change-value", ubah_posisi)
+btn_pilih_film.connect("clicked", pilih_film)
 
 window.show_all()
 
 mulai = False
 durasi = None
-fileFilm = None
+file_film = None
 
 #
 # Gstreamer
@@ -130,22 +130,22 @@ time_format = gst.Format(gst.FORMAT_TIME)
 # Pemutaran film
 #
 
-aturPosisiId = None
+atur_posisi_id = None
 
 def putar(file):
-	global mulai, durasi, fileFilm, aturPosisiId
+	global mulai, durasi, file_film, atur_posisi_id
 
-	fileFilm = file
+	file_film = file
 	player.set_property("uri", "file://%s" % os.path.abspath(file))
 
 	mulai = False
 	durasi = None
 	player.set_state(gst.STATE_NULL)
 
-	if not aturPosisiId:
-		aturPosisiId = thread.start_new_thread(aturPosisi, ())
+	if not atur_posisi_id:
+		atur_posisi_id = thread.start_new_thread(atur_posisi, ())
 
-	startStop()
+	start_stop()
 
 
 #

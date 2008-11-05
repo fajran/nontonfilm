@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Nov  5 23:59:55 2008 -->
+<!--Generated with glade3 3.4.5 on Thu Nov  6 00:33:51 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window">
     <property name="width_request">600</property>
@@ -10,7 +10,7 @@
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <child>
-          <widget class="GtkVBox" id="boxVideo">
+          <widget class="GtkVBox" id="box_video">
             <property name="visible">True</property>
             <child>
               <placeholder/>
@@ -23,14 +23,14 @@
             <property name="border_width">5</property>
             <property name="spacing">5</property>
             <child>
-              <widget class="GtkButton" id="btnPutar">
+              <widget class="GtkButton" id="btn_putar">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">GTK_RELIEF_HALF</property>
                 <property name="response_id">0</property>
                 <child>
-                  <widget class="GtkImage" id="imgPutar">
+                  <widget class="GtkImage" id="img_putar">
                     <property name="visible">True</property>
                     <property name="stock">gtk-media-play</property>
                   </widget>
@@ -41,7 +41,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkHScale" id="sWaktu">
+              <widget class="GtkHScale" id="slider_waktu">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="adjustment">0 0 30000000 100000 1000000 1</property>
@@ -54,7 +54,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="btnPilihFilm">
+              <widget class="GtkButton" id="btn_pilih_film">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
