@@ -7,6 +7,8 @@ import pygst
 pygst.require("0.10")
 import gst
 import os
+import time
+import thread
 
 #
 # Antar muka
@@ -16,8 +18,23 @@ def keluar(w):
 	player.set_state(gst.STATE_NULL)
 	gtk.main_quit()
 
+def ambil_durasi():
+	global durasi, sWaktu
+	print "abc"
+
+	while True:
+		try:
+			time.sleep(0.2)
+			durasi = player.query_duration(time_format, None)[0]
+			break
+		except:
+			print "ngaco"
+			pass
+
+	sWaktu.set_range(0, durasi / 1000000)
+
 def startstop(w=None):
-	global mulai
+	global mulai, durasi
 
 	if mulai:
 		player.set_state(gst.STATE_PAUSED)
@@ -26,8 +43,16 @@ def startstop(w=None):
 	else:
 		player.set_state(gst.STATE_PLAYING)
 		imgPutar.set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
-	
+
+	if not durasi:
+		print "def"
+		thread.start_new_thread(ambil_durasi, ())
+
 	mulai = not mulai
+
+def ubahposisi(w):
+	posisi = sWaktu.get_value() * 1000000
+	player.seek_simple(time_format, gst.SEEK_FLAG_FLUSH, posisi)
 	
 
 glade = gtk.glade.XML("nontonfilm.glade")
@@ -44,10 +69,12 @@ boxVideo.add(layar)
 
 btnPutar.connect("clicked", startstop)
 window.connect("destroy", keluar)
+sWaktu.connect("value-changed", ubahposisi)
 
 window.show_all()
 
 mulai = False
+durasi = None
 
 #
 # Gstreamer
@@ -76,16 +103,20 @@ bus.enable_sync_message_emission()
 bus.connect("message", on_message)
 bus.connect("sync-message::element", on_sync_message)
 
+time_format = gst.Format(gst.FORMAT_TIME)
+
 #
 # Pemutaran film
 #
 
 def putar(file):
-	global mulai
+	global mulai, durasi
 
 	player.set_property("uri", "file://%s" % os.path.abspath(file))
 
 	mulai = False
+	durasi = None
+
 	startstop()
 
 
